@@ -76,7 +76,7 @@ int main() {
         }
         system("cls");
     }
-    cout << "game over";
+    cout << "More levels coming soon";
     return 0;
 }
 
@@ -216,10 +216,12 @@ void deleteLetter(pos play_board[], pos board[], string& player_answer,
 void moveCur(const pos& dir, pos& cur_pos){
     cur_pos.x += dir.x;
     cur_pos.y += dir.y;
-    if(cur_pos.x < 0) cur_pos.x = 29;
+    if(cur_pos.x < 0) cur_pos.x = 28;
     if(cur_pos.y < 3) cur_pos.y = 7;
-    if(cur_pos.x > 29) cur_pos.x = 0;
+    if(cur_pos.x > 28) cur_pos.x = 0;
     if(cur_pos.y > 7) cur_pos.y = 3;
+    if(cur_pos.y > 3 && cur_pos.y < 6 && dir.y == 1) cur_pos.y = 6;
+    if(cur_pos.y > 3 && cur_pos.y < 6 && dir.y == -1) cur_pos.y = 3;
     gotoxy(cur_pos.x, cur_pos.y);
 }
 
