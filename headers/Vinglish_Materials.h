@@ -5,24 +5,24 @@
 #include <windows.h>
 #include <time.h>
 #include <fstream>
+#include "wtypes.h"
 
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+
 using namespace std;
 
 #define fps 60 // frame rate
 #define delay 1000/fps // time per frame
 
-#define screenW 670 // screen's width
-#define screenH 1000 // screen's height
 #define row 2 // number of rows of a board
 #define col 8 // number of columns of a board
 #define board_size (row*col) // total cells of a board
-#define letterW 54 // button texture's width
-#define letterH 78 // button texture's height
+//#define letterW 54 // button texture's width
+//#define letterH 78 // button texture's height
 
 /* macro some colours */
 #define CREAM_WHITE {255, 242, 204, 0}
@@ -30,6 +30,21 @@ using namespace std;
 #define MINT {129, 231, 170, 0}
 #define SALMON_RED {242, 74, 46, 0}
 #define BROWN_RED {152, 30, 10, 0}
+#define DARK_GREY {64,64,64,0}
+
+float setRatio();
+void clean();
+
+// declare ratio and sizes and set default
+// the screen is vertically divided into 4 sections 
+float ratio = setRatio(); // shrink-ratio
+//int screenW = 670, screenH = 1000; // screen's sizes
+//int _1stH = 100, _2ndH = 270, _3rdH = 340, _4thH = 290; // sections' height
+int screenW = 670*ratio, screenH = 1000*ratio; // screen's sizes
+int _1stH = 100*ratio, _2ndH = 270*ratio, _3rdH = 340*ratio, _4thH = 290*ratio; // sections' height
+// sections' vertical base (start point)
+int _1stB, _2ndB, _3rdB, _4thB; 
+int letterW = 54*ratio, letterH = 78*ratio;
 
 /* a struct to store level's data */
 struct level{
@@ -56,13 +71,12 @@ struct pos{
 	}
 };
 
-void clean();
-
 /* things we will working with throughout the game */
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
 TTF_Font *font = NULL;
 SDL_Event event;
+Mix_Music* music = NULL;
 
 /*	I declare a lot of texture so that I don't have to remake texture everytime 
 	this might take up a little space but will shorten processing time 
@@ -91,9 +105,22 @@ SDL_Texture* back_click_texture = NULL;
 SDL_Rect back_icon_rect, back_text_rect, exit_icon_rect, exit_text_rect;
 
 vector<level> lv; // where we store all level's data
-int lv_num; // current playing level
+int lv_num = 0; // current playing level
 pos board[board_size + 1]; // initialize a board that has <board_size> cells
 // +1 so that index range from 1 to <board_size> for easier understanding
+
+/* get screen's height in pixel and set the ratio accordingly */
+float setRatio(){
+	// get user's screen resolution
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+	
+	// if user's screen is less than 100 pixel height, set shrink ratio = 0.7
+	if (desktop.bottom < 1080) return 0.7;
+	// else shrink ratio = default, which is 1
+	else return 1;
+}
 
 // Clean up, free system resources
 void clean(){
@@ -122,12 +149,19 @@ void clean(){
 	// destroy window
 	SDL_DestroyWindow(window);
 	window = NULL;
+	
+	// free the music
+	Mix_FreeMusic(music);
+	music = NULL;
 
 	// quit the truetype font api
 	TTF_Quit();
 
 	// quit the image api
 	IMG_Quit();
+	
+	// quit the mixer api
+	Mix_Quit();
 
 	// quit SDL subsystems
 	SDL_Quit();

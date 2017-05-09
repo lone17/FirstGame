@@ -10,11 +10,12 @@ void collision(int& last);
 void click(const int& i);
 void pick(const int& i, string& player_answer, pos answer_board[]);
 void unpick(const int& i, string& player_answer, pos answer_board[]);
+void playMixer(const string address, int loops);
 
 // get player's back/exit request
 #ifndef Vinglish_back_or_exit
 #define Vinglish_back_or_exit {\
-	if (lv_num >0 && player_back(event)){\
+	if (lv_num > 0 && player_back(event)){\
 		lv_num--;\
 		break;\
 	}\
@@ -35,7 +36,7 @@ void unpick(const int& i, string& player_answer, pos answer_board[]);
 				break;\
 			}\
 			if (event.type == SDL_MOUSEBUTTONUP){\
-				if (board[i].y < 710) unpick(i, player_answer, answer_board);\
+				if (board[i].y < _4thB) unpick(i, player_answer, answer_board);\
 				else pick(i, player_answer, answer_board);\
 				break;\
 			}\
@@ -53,16 +54,16 @@ bool player_exit(SDL_Event event){
 	cursor.y = event.motion.y;
 
 	// check if mouse is in the exit button's area
-	if (SDL_PointInRect(&cursor, &exit_icon_rect)){
+	if (SDL_PointInRect(&cursor, &exit_text_rect)){
 		// animation when you hover over the exit button
-		drawRect(570, 0, 100, 90, BROWN_RED);
-		drawTexture(exit_text_texture, exit_icon_rect);
+		drawRect(570*ratio, 0, 100*ratio, 90*ratio, BROWN_RED);
+		drawTexture(exit_text_texture, exit_text_rect);
 		if (event.type == SDL_MOUSEBUTTONUP) return true;
 	}
 	else {
 		// if not then draw the default texture
-		drawRect(570, 0, 100, 90, BROWN_RED);
-		drawTexture(exit_icon_texture, exit_text_rect);
+		drawRect(570*ratio, 0, 100*ratio, 90*ratio, BROWN_RED);
+		drawTexture(exit_icon_texture, exit_icon_rect);
 	}
 	return false;
 }
@@ -76,16 +77,16 @@ bool player_back(SDL_Event event){
 	cursor.y = event.motion.y;
 
 	// check if mouse is in the back button's area
-	if (SDL_PointInRect(&cursor, &back_icon_rect)){
+	if (SDL_PointInRect(&cursor, &back_text_rect)){
 		// animation when you hover over the back button
-		drawRect(0, 0, 100, 90, BROWN_RED);
-		drawTexture(back_text_texture, back_icon_rect);
+		drawRect(0, 0, 100*ratio, 90*ratio, BROWN_RED);
+		drawTexture(back_text_texture, back_text_rect);
 		if (event.type == SDL_MOUSEBUTTONUP) return true;
 	}
 	else {
 		// if not then draw the default texture
-		drawRect(0, 0, 100, 90, BROWN_RED);
-		drawTexture(back_icon_texture, back_text_rect);
+		drawRect(0, 0, 100*ratio, 90*ratio, BROWN_RED);
+		drawTexture(back_icon_texture, back_icon_rect);
 	}
 	return false;
 }
@@ -133,7 +134,7 @@ void collision(int& last){
 //			if (last != i) Beep(700,40);
 			// if it isn't at the button board section,
 			// it must be at the answer section
-			if (board[i].y < 710)
+			if (board[i].y < _4thB)
 				// draw the backgound match answer section's colour
 				drawRect(board[i].x, board[i].y, letterW, letterH, CREAM_WHITE);
 			else // if it is at the button board section
@@ -210,6 +211,17 @@ void unpick(const int& i, string& player_answer, pos answer_board[]){
 		break;
 		}
 	}
+}
+
+// play music or sound
+void playMixer(const string address, int loops){
+	//Load Music
+	music = Mix_LoadMUS(address.c_str());
+	if (music == NULL)
+	{
+		cout << Mix_GetError();
+	}
+	Mix_PlayMusic(music, loops);
 }
 
 
