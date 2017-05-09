@@ -3,6 +3,7 @@
 #include "Vinglish_Materials.h"
 #include "Vinglish_Draw.h"
 
+void setSizes();
 int getX(int index, int len);
 int getY(int index, int len, int loc, int baseH);
 void initBasic();
@@ -14,6 +15,7 @@ void setAnsBoard(const int& len, pos answer_board[]);
 
 #ifndef Vinglish_init_materials
 #define Vinglish_init_materials {\
+	setSizes();\
 	initBasic();\
 	initButtonTexture();\
 	initNevigationTexture();}
@@ -27,6 +29,26 @@ void setAnsBoard(const int& len, pos answer_board[]);
 }
 #endif /* End Vinglish_game_setup */
 
+
+void setSizes(){
+	
+//	if (ratio == 1){
+//		// screen's width and height in pixel
+//		screenW = 670; screenH = 1000;
+//		// sections' height in pixel
+//		_1stH = 100; _2ndH = 270; _3rdH = 340; _4thH = 290; 
+//	}
+//	else if(ratio == 0.7){
+//		// screen's width and height in pixel
+//		screenW = 470; screenH = 700;
+//		// sections' height in pixel
+//		_1stH = 70; _2ndH = 190; _3rdH = 270; _4thH = 200;
+//	}
+	_1stB = 0; 
+	_2ndB = _1stB + _1stH;
+	_3rdB = _2ndB + _2ndH;
+	_4thB = _3rdB + _3rdH;
+}
 /*	get x co-ordiante for the button's texture
 	just a bunch of calculation that's hard to explain in text so you may skip
 	just know that basically this is used to align buttons horizontally	*/
@@ -51,7 +73,7 @@ int getX(int index, int len){
 	if (index > col) row_index = index - col;
 	else row_index = index;
 
-	int gap = 20; // gap's width between 2 consecutive textures
+	int gap = 20*ratio; // gap's width between 2 consecutive textures
 
 	int rowW = row_len*letterW + (row_len-1)*gap; // calculate row's width
 
@@ -81,7 +103,7 @@ int getY(int index, int len, int loc, int baseH){
 	if(index <= col) row_num = 1;
 	else row_num = 2;
 
-	int dis = 40; // distance between 2 columns
+	int dis = 40*ratio; // distance between 2 columns
 
 	int sheetH = row_amt*letterH + (row_amt-1)*dis; // calculate sheet's height
 
@@ -93,6 +115,7 @@ int getY(int index, int len, int loc, int baseH){
 
 /* initialize basic elements */
 void initBasic(){
+	
 	// initialize subsystems
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		cout << "ERROR: " << SDL_GetError();
@@ -101,7 +124,7 @@ void initBasic(){
 
 	// initialize the image api
 	if (IMG_Init(IMG_INIT_PNG) < 0){
-		cout << "ERROR: " << SDL_GetError();
+		cout << "ERROR: " << IMG_GetError();
 		exit(1);
 	}
 
@@ -110,7 +133,6 @@ void initBasic(){
 		cout << "ERROR: " << SDL_GetError();
 		exit(1);
 	}
-
 	// initialize window
 	window = SDL_CreateWindow("Vinglish", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 				screenW, screenH, SDL_WINDOW_BORDERLESS);
@@ -126,6 +148,12 @@ void initBasic(){
 	if(renderer == NULL){
 		cout << "ERROR: " << SDL_GetError();
 		exit(1);
+	}
+	
+	// initialize mixer api
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
+	{
+		cout << Mix_GetError();
 	}
 }
 
@@ -197,17 +225,17 @@ void initNevigationTexture(){
     // cuz I am too lazy to write a funcyion for this
     // also due to the heterogeneity of textures' sizes
     // it's not ideal to write a function
-	back_icon_rect.x = 20; back_icon_rect.y = 22;
-	back_icon_rect.w = 58; back_icon_rect.h = 64;
+	back_text_rect.x = 20*ratio; back_text_rect.y = 22*ratio;
+	back_text_rect.w = 58; back_text_rect.h = 64;
 
-	back_text_rect.x = 37; back_text_rect.y = 36;
-	back_text_rect.w = 30; back_text_rect.h = 30;
+	back_icon_rect.x = 37*ratio; back_icon_rect.y = 36*ratio;
+	back_icon_rect.w = 30; back_icon_rect.h = 30;
 
-	exit_icon_rect.x = 587; exit_icon_rect.y = 22;
-	exit_icon_rect.w = 58; exit_icon_rect.h = 64;
+	exit_text_rect.x = 587*ratio; exit_text_rect.y = 22*ratio;
+	exit_text_rect.w = 58; exit_text_rect.h = 64;
 
-	exit_text_rect.x = 604; exit_text_rect.y = 34;
-	exit_text_rect.w = 31; exit_text_rect.h = 31;
+	exit_icon_rect.x = 604*ratio; exit_icon_rect.y = 34*ratio;
+	exit_icon_rect.w = 31; exit_icon_rect.h = 31;
 
 	/* load icon, text and click texture for exit button */
 	// load image into surface
@@ -280,24 +308,25 @@ void drawUI(){
 	/* draw nevigation bar */
 	drawRect(0, 0, screenW, 100, BROWN_RED);
     // if it's not lv 1, show back button
-	if (lv_num > 0) drawTexture(back_icon_texture, back_text_rect);
+	if (lv_num > 0) drawTexture(back_icon_texture, back_icon_rect);
     // show exit button
-	drawTexture(exit_icon_texture, exit_text_rect);
+	drawTexture(exit_icon_texture, exit_icon_rect);
     // show current lv
-	drawText(100, "L E V E L " + to_string(lv_num+1), "font/lato/lato-light.ttf", 43, PURE_WHITE, 0, 0);
-    // draw a white line to separate nevigation bar and the other parts
-    drawRect(0 , 99, 670, 1, PURE_WHITE);
+	drawText(_1stH, "L E V E L " + to_string(lv_num), "font/lato/lato-light.ttf", 43, PURE_WHITE, 0, _1stB);
+    // draw a hozizontal line to separate nevigation bar and the other parts
+    int lineWeight = 1;
+    drawRect(0 , _2ndB - lineWeight, screenW, lineWeight, PURE_WHITE);
 
 	/* draw hint section */
-	drawRect(0, 100, screenW, 270, SALMON_RED);
+	drawRect(0, _2ndB, screenW, _2ndH, SALMON_RED);
     // show hint
-	drawText(270, lv[lv_num].hint, "font/Lato/lato-regular.ttf",  60, PURE_WHITE, 0 , 100);
+	drawText(_2ndH, lv[lv_num].hint, "font/Lato/lato-regular.ttf",  60, PURE_WHITE, 0 , _2ndB);
 
 	/* draw answer section */
-	drawRect(0 , 370, screenW, 340, CREAM_WHITE);
+	drawRect(0 , _3rdB, screenW, _3rdH, CREAM_WHITE);
 
 	/* draw keyboard section */
-	drawRect(0, 710, screenW, 290, MINT);
+	drawRect(0, _4thB, screenW, _4thH, MINT);
 }
 
 
@@ -321,7 +350,7 @@ void setBoard(){
             board[temp].symbol = (lv[lv_num].answer[i-1]);
             // set (x, y) values
             board[temp].x = getX(temp, board_size);
-            board[temp].y = getY(temp, board_size, 710, 290);
+            board[temp].y = getY(temp, board_size, _4thB, _4thH);
             // draw it to the screen
 			drawButtonTexture(button_texture, board[temp].x, board[temp].y);
 			drawLetter(board[temp].symbol, "font/Simple-regular.ttf",
@@ -342,11 +371,11 @@ void setBoard(){
         	int temp;
         	do temp = 65 + rand()%26;
         	// making sure it won't get F, J, W, Z because the answer is in vietnamese
-        	while (temp == 70 || temp == 74 || temp == 87 || temp == 90);
+        	while (temp == 'F' || temp == 'J' || temp == 'W' || temp == 'Z');
         	// set symbol and (x, y) values for that member
             board[i].symbol = (char)temp;
             board[i].x = getX(i, board_size);
-            board[i].y = getY(i, board_size, 710, 290);
+            board[i].y = getY(i, board_size, _4thB, _4thH);
             // then draw it
 			drawButtonTexture(button_texture, board[i].x, board[i].y);
 			drawLetter(board[i].symbol, "font/Simple-regular.ttf",
@@ -364,18 +393,18 @@ void setBoard(){
 void setAnsBoard(const int& len, pos answer_board[]){
 	// as you can see i go from 1, not 0 so the 1st index of answer_board[] is 1
 	for(int i = 1; i <= len; i++){
-		// play a beep sound just to make the game cooler
-		Beep(700,50);
 		// set (x, y) value for each member of answer_board
 		answer_board[i].x = getX(i, len);
-		answer_board[i].y = getY(i, len, 370, 340);
+		answer_board[i].y = getY(i, len, _3rdB, _3rdH);
 
 		// draw a blank texture
 		drawButtonTexture(blank_texture, answer_board[i].x, answer_board[i].y);
+	}
+		// play a beep sound just to make the game cooler
+		Beep(700,50);
 		// show it to the screen
 		SDL_RenderPresent(renderer);
 		// delay so that it won't happen too fast
 		SDL_Delay(200);
-	}
 }
 

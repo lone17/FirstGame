@@ -9,6 +9,7 @@ void drawText(int baseH, const string& text, const string& font_address,
 void drawButtonTexture(SDL_Texture* t, int x, int y);
 void drawTexture(SDL_Texture* t, SDL_Rect des);
 void drawImage(const string& address, int x, int y);
+void alignImage(const string& address, SDL_Rect area);
 void drawRect(int x, int y, int w, int h, SDL_Color colour);
 void lv_completed();
 void more_lv_coming_soon();
@@ -22,7 +23,7 @@ void more_lv_coming_soon();
 void drawLetter(const string& letter, const string& font_address,
 				 int size, SDL_Color colour, int x, int y){
 	SDL_Rect src, des; // source and destination rectangle
-
+	size *= ratio;
 	// get font and size
 	font = TTF_OpenFont(font_address.c_str(), size);
 	if (font == NULL){
@@ -72,7 +73,7 @@ void drawLetter(const string& letter, const string& font_address,
 void drawText(int baseH, const string& text, const string& font_address,
 				 int size, SDL_Color colour, int x, int y){
 	SDL_Rect src, des; // source and destination rectangle
-
+	size = size*ratio;
 	// get font and size
 	font = TTF_OpenFont(font_address.c_str(), size);
 	if (font == NULL){
@@ -125,8 +126,10 @@ void drawButtonTexture(SDL_Texture* t, int x, int y){
 	src.x = src.y = 0;
 	des.x = x;
 	des.y = y;
-	des.w = src.w = letterW;
-	des.h = src.h = letterH;
+	src.w = 54;
+	src.h = 78;
+	des.w = letterW; 
+	des.h = letterH;
 
 	// copy texture to renderer
 	SDL_RenderCopy(renderer, t, &src, &des);
@@ -141,6 +144,8 @@ void drawTexture(SDL_Texture* t, SDL_Rect des){
 	src.x = src.y = 0;
 	src.w = des.w;
 	src.h = des.h;
+	des.w *= ratio;
+	des.h *= ratio;
 
 	// copy texture to renderer
 	SDL_RenderCopy(renderer, t, &src, &des);
@@ -168,10 +173,48 @@ void drawImage(const string& address, int x, int y){
 
 	// set value for source and destination rectangle
 	src.x = src.y = 0;
-	des.x = x;
-	des.y = y;
-	des.w = src.w;
-	des.h = src.h;
+	des.x = x*ratio;
+	des.y = y*ratio;
+	des.w = src.w*ratio;
+	des.h = src.h*ratio;
+
+	// Copy texture to the renderer
+	SDL_RenderCopy(renderer, texture, &src, &des);
+
+	// de-allocate surface
+	SDL_FreeSurface(surface);
+	surface = NULL;
+
+	// de-allocate texture
+	SDL_DestroyTexture(texture);
+	texture = NULL;
+}
+
+/*	align and draw an image from <address> at the area defined by <area>	*/
+void alignImage(const string& address, SDL_Rect area){
+	// declare source and destination rectangle
+	SDL_Rect src, des;
+
+	// load image into surface
+	SDL_Surface* surface = IMG_Load(address.c_str());
+	// check if image was successfully loaded
+	if(surface == NULL){
+		cout << "ERROR: " << SDL_GetError();
+		exit(1);
+	}
+
+	// create texture from loaded image
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+	// get texture width and height
+	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
+
+	// set value for source and destination rectangle
+	src.x = src.y = 0;
+	des.x = area.x + (area.w-src.w*ratio)/2;
+	des.y = area.y + (area.h-src.h*ratio)/2;
+	des.w = src.w*ratio;
+	des.h = src.h*ratio;
 
 	// Copy texture to the renderer
 	SDL_RenderCopy(renderer, texture, &src, &des);
@@ -197,8 +240,8 @@ void drawRect(int x, int y, int w, int h, SDL_Color colour){
 
 // show when a lv is completed
 void lv_completed(){
-	drawRect(0 , 370, screenW, 340, CREAM_WHITE);
-	drawText(340, "LEVEL COMPLETED", "font/lato/lato-regular.ttf", 60, SALMON_RED, 0, 370);
+	drawRect(0 , _3rdB, screenW, _3rdH, CREAM_WHITE);
+	drawText(_3rdH, "LEVEL COMPLETED", "font/lato/lato-regular.ttf", 60, SALMON_RED, 0, _3rdB);
 	SDL_RenderPresent(renderer);
 	SDL_Delay(2000);
 }
@@ -206,14 +249,11 @@ void lv_completed(){
 // show if all levels are completed
 void more_lv_coming_soon(){
 	drawRect(0, 0, screenW, screenH, MINT);
-	drawRect(85, 250, 500, 500, PURE_WHITE);
-	drawRect(90, 255, 490, 490, MINT);
-	drawText(130,"MORE LEVELS","font/lato/lato-regular.ttf",60,PURE_WHITE,0,300);
-	drawText(140,"COMING","font/lato/lato-regular.ttf",60,PURE_WHITE,0,430);
-	drawText(130,"SOON","font/lato/lato-regular.ttf",60,PURE_WHITE,0,570);
+	drawRect(85*ratio, 250*ratio, 500*ratio, 500*ratio, PURE_WHITE);
+	drawRect(90*ratio, 255*ratio, 490*ratio, 490*ratio, MINT);
+	drawText(130*ratio,"MORE LEVELS","font/lato/lato-regular.ttf",60,PURE_WHITE,0,300*ratio);
+	drawText(140*ratio,"COMING","font/lato/lato-regular.ttf",60,PURE_WHITE,0,430*ratio);
+	drawText(130*ratio,"SOON","font/lato/lato-regular.ttf",60,PURE_WHITE,0,570*ratio);
 	SDL_RenderPresent(renderer);
-	while(1){
-		SDL_WaitEvent(&event);
-		if (event.type == SDL_MOUSEBUTTONUP) break;
-	}
+	SDL_Delay(2500);
 }
