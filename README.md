@@ -2,7 +2,11 @@
 
   - A word-based game with 200 exclusive levels
   - You will be given a set of English words, translate those into a meaning Vietnamese word/term 
- 
+  
+# Screenshots
+
+<img src="https://raw.githubusercontent.com/lone17/Vinglish/main/screenshots/1.png" height="400"> <img src="https://raw.githubusercontent.com/lone17/Vinglish/main/screenshots/2.png" height="400"> <img src="https://raw.githubusercontent.com/lone17/Vinglish/main/screenshots/3.png" height="400"> 
+
 # Getting started
 
   - Run Vinglish.exe to play
@@ -15,7 +19,7 @@
   - SDL 2.0: Graphic library
   - Powerpoint 2016: Texture design
 	
-# Made by 
+# Author 
 
   - Lone (https://www.facebook.com/los.adve)
 
