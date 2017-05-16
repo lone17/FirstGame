@@ -1,3 +1,4 @@
+
 # Vinglish
 
   - A word-based game with 200 exclusive levels
@@ -34,4 +35,5 @@
 
   - Game's ideal is based on the game called "Tiếng tây tiếng ta" by Fourtii.
   - I do not own the copyright of the background music, all credits go to its author(s) (who ever they are)
-  - My code is poorly written and unprofessionally organized so please do give me your advice. Much appreciated
+  - I started making this not knowing about OOP and by the time I do the code is to hard to reconstruct so please pardon my messy programing.
+  - Source code is poorly written and unprofessionally organized, do feel welcomed to give me your advice. Much appreciated.
