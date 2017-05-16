@@ -29,47 +29,39 @@ void setAnsBoard(const int& len, pos answer_board[]);
 }
 #endif /* End Vinglish_game_setup */
 
-
+/*
+	set sections' start point	
+*/
 void setSizes(){
-	
-//	if (ratio == 1){
-//		// screen's width and height in pixel
-//		screenW = 670; screenH = 1000;
-//		// sections' height in pixel
-//		_1stH = 100; _2ndH = 270; _3rdH = 340; _4thH = 290; 
-//	}
-//	else if(ratio == 0.7){
-//		// screen's width and height in pixel
-//		screenW = 470; screenH = 700;
-//		// sections' height in pixel
-//		_1stH = 70; _2ndH = 190; _3rdH = 270; _4thH = 200;
-//	}
 	_1stB = 0; 
 	_2ndB = _1stB + _1stH;
 	_3rdB = _2ndB + _2ndH;
 	_4thB = _3rdB + _3rdH;
 }
-/*	get x co-ordiante for the button's texture
+
+/*	
+	get x co-ordiante for the button's texture
 	just a bunch of calculation that's hard to explain in text so you may skip
-	just know that basically this is used to align buttons horizontally	*/
+	basically this is used for aligning buttons horizontally	
+*/
 // index: letter's serial number in the string
 // len: string's length
 int getX(int index, int len){
 	int row_len; // row's length
-	// if string's length > number of cols
-	// then 1st-row's length = number of cols
-	// and 2nd-row's length = string's length - number of cols
-	// else the string could be displayed in 1 row
-	// so row's length = string's length
+	/*	if string's length > number of cols
+		then 1st-row's length = number of cols
+		and 2nd-row's length = string's length - number of cols
+		else the string could be displayed in 1 row
+		so row's length = string's length	*/
 	if (len > col)
 		if (index > col) row_len = len - col;
 		else row_len = col;
 	else row_len = len;
 
 	int row_index; // index's serial number
-	// if index > col then index it's in the 2nd row
-	// so index's serial number = index - number of cols
-	// else index is in the 1st row and index's serial number = index itself
+	/*	if index > col then index it's in the 2nd row
+		so index's serial number = index - number of cols
+		else index is in the 1st row and index's serial number = index itself	*/
 	if (index > col) row_index = index - col;
 	else row_index = index;
 
@@ -82,18 +74,20 @@ int getX(int index, int len){
 	return align + (row_index-1)*(letterW + gap); // return x co-ordinate of the texture
 }
 
-/*	get y co-ordinate of the button's texture
+/*	
+	get y co-ordinate of the button's texture
 	again, a bunch of calculation
-	basically this is used to align buttons vertically */
+	basically this is used for aligning buttons vertically 
+*/
 // index: letter's serial number in the string
 // len: string's length
 // loc: location of the section where we want the texture to be shown
 // baseH: height of that section
 int getY(int index, int len, int loc, int baseH){
 	int row_amt; // amount of rows
-	// if string's length < number of columns then it could be display in 1 row
-	// else 2 rows will be displayed
-	// since there is no string that could be displayed in more than 2 rows
+	/* if string's length < number of columns then it could be display in 1 row
+		else 2 rows will be displayed
+		since there is no string that could be displayed in more than 2 rows */
 	if (len <= col) row_amt = 1;
 	else row_amt = 2;
 
@@ -107,13 +101,15 @@ int getY(int index, int len, int loc, int baseH){
 
 	int sheetH = row_amt*letterH + (row_amt-1)*dis; // calculate sheet's height
 
-	// devide the screen into 3 parts and we are working in the 2nd part
+	// devide the screen into 3 sections and we are working in the 2nd section
 	int align = loc + (baseH - sheetH)/2;
 
 	return align + (row_num-1)*(letterH + dis); // return y co-ordinate of the texture
 }
 
-/* initialize basic elements */
+/* 
+	initialize basic elements 
+*/
 void initBasic(){
 	
 	// initialize subsystems
@@ -157,9 +153,11 @@ void initBasic(){
 	}
 }
 
-/*	initialize buttons' textures
+/*	
+	initialize buttons' textures
 	it may looks like a long function
-	but actually just same set of steps doing over and over again */
+	but actually just same set of steps doing over and over again 
+*/
 void initButtonTexture(){
 	// declare a surface
 	SDL_Surface* surface = NULL; 
@@ -213,18 +211,20 @@ void initButtonTexture(){
 	surface = NULL;
 }
 
-/* initialize nevigation buttons's textures
+/* 
+	initialize nevigation buttons's textures
 	it may looks like a long function but actually 
-	it just doing the same set of steps over and over again */
+	it just doing the same set of steps over and over again 
+*/
 void initNevigationTexture(){
 	// declare a suface
 	SDL_Surface* surface = NULL;
 	
 	/* initialize rectangle for back and exit button */
-    // all numbers are adjusted manually
-    // cuz I am too lazy to write a funcyion for this
-    // also due to the heterogeneity of textures' sizes
-    // it's not ideal to write a function
+    /* all numbers are adjusted manually
+    	because I am too lazy to write a funcyion for this
+    	also due to the heterogeneity of textures' sizes
+    	it's not ideal to write a function	*/
 	back_text_rect.x = 20*ratio; back_text_rect.y = 22*ratio;
 	back_text_rect.w = 58; back_text_rect.h = 64;
 
@@ -294,15 +294,17 @@ void initNevigationTexture(){
 	surface = NULL;
 }
 
-/*	draw UI layout
+/*	
+	draw UI layout
 	UI is devine into 4 sections
 	1st: the nevigation bar
 	2nd: the box where the hint is shown
 	3rd: the box where the guessing sheet is shown
-	4rd: the box where the keyboard is shown */
+	4rd: the box where the keyboard is shown 
+*/
 void drawUI(){
-	// clear renderer
-	// not really nescessary but just to be sure
+	/*	clear renderer
+		not really nescessary but just to be sure	*/
 	SDL_RenderClear(renderer);
 
 	/* draw nevigation bar */
@@ -312,7 +314,8 @@ void drawUI(){
     // show exit button
 	drawTexture(exit_icon_texture, exit_icon_rect);
     // show current lv
-	drawText(_1stH, "L E V E L " + to_string(lv_num), "font/lato/lato-light.ttf", 43, PURE_WHITE, 0, _1stB);
+    if (lv_num == 0) drawText(_1stH, "T U T O R I A L", "font/lato/lato-light.ttf", 43, PURE_WHITE, 0, _1stB);
+	else drawText(_1stH, "L E V E L " + to_string(lv_num), "font/lato/lato-light.ttf", 43, PURE_WHITE, 0, _1stB);
     // draw a hozizontal line to separate nevigation bar and the other parts
     int lineWeight = 1;
     drawRect(0 , _2ndB - lineWeight, screenW, lineWeight, PURE_WHITE);
@@ -321,16 +324,25 @@ void drawUI(){
 	drawRect(0, _2ndB, screenW, _2ndH, SALMON_RED);
     // show hint
 	drawText(_2ndH, lv[lv_num].hint, "font/Lato/lato-regular.ttf",  60, PURE_WHITE, 0 , _2ndB);
+	if (lv_num == 0) {
+		if (ratio == 1) 
+			alignImage("image/tutorial.png", {0, _2ndB, screenW, _2ndH});
+		else
+			alignImage("image/tutorial-small.png", {0, _2ndB, screenW, _2ndH});
+	}
 
 	/* draw answer section */
 	drawRect(0 , _3rdB, screenW, _3rdH, CREAM_WHITE);
+	if (lv_num == 0) drawText(_3rdH/3, "Click on buttons to form the answer", "font/lato/lato-lightitalic.ttf", 30, SALMON_RED, 0, _3rdB + _3rdH*2/3);
 
 	/* draw keyboard section */
 	drawRect(0, _4thB, screenW, _4thH, MINT);
 }
 
 
-/* set (x ,y) values for board[] and then display it */
+/* 
+	set (x ,y) values for board[] and then display it 
+*/
 void setBoard(){
 	// set default symbol for all board's member as null
 	for (int i = 1; i <= board_size; i++) board[i].symbol = "\0";
@@ -340,30 +352,26 @@ void setBoard(){
 
     // for each letter in answer
     for (int i = 1; i <= lv[lv_num].answer.size(); i++){
-    	// random a member of the board[]
-    	// +1 because board start from 1
+    	/*	random a member of the board[]
+    		+1 because board start from 1	*/
         int temp = 1 + rand()%board_size;
         // if that member haven't been used, which means symbol is still as default
         if(board[temp].symbol == "\0"){
-        	// set its symbol as the letter number [i-1] of the answer
-        	// -1 because i start from 1 but answer start from 0
+        	/*	set its symbol as the letter number [i-1] of the answer
+        		-1 because i start from 1 but answer start from 0	*/
             board[temp].symbol = (lv[lv_num].answer[i-1]);
             // set (x, y) values
             board[temp].x = getX(temp, board_size);
             board[temp].y = getY(temp, board_size, _4thB, _4thH);
-            // draw it to the screen
-			drawButtonTexture(button_texture, board[temp].x, board[temp].y);
-			drawLetter(board[temp].symbol, "font/Simple-regular.ttf",
-				45, PURE_WHITE, board[temp].x, board[temp].y-2);
         }
-        // if that member is already used, decrease i by one so that we can
-        // continue working with letter number [i-1] of the answer
+        /* 	if that member is already used, decrease i by one so that we can
+        	continue working with letter number [i-1] of the answer	*/
         else i--;
     }
 
-    // after every letter of answer had been set randomly into the board[]
-    // we need to random the left over
-    // scan each member in board[]
+    /*	after every letter of answer had been set randomly into the board[]
+    	we need to random the left over
+   		scan each member in board[]	*/
     for (int i = 1; i <= board_size; i++){
     	// if a member haven't been used
         if(board[i].symbol == "\0"){
@@ -376,15 +384,39 @@ void setBoard(){
             board[i].symbol = (char)temp;
             board[i].x = getX(i, board_size);
             board[i].y = getY(i, board_size, _4thB, _4thH);
-            // then draw it
-			drawButtonTexture(button_texture, board[i].x, board[i].y);
-			drawLetter(board[i].symbol, "font/Simple-regular.ttf",
-				45, PURE_WHITE, board[i].x, board[i].y-2);
 		}
     }
+    
+    // show all buttons randomly
+//    bool check[board_size+1] = {false};
+//    for (int j = 1; j <= board_size; j++){
+//    	int i = 1 + rand()%board_size;
+//    	if(!check[i]){
+//    		check[i] = true;
+//    	drawButtonTexture(button_texture, board[i].x, board[i].y);
+//		drawLetter(board[i].symbol, "font/Simple-regular.ttf",
+//				45, PURE_WHITE, board[i].x, board[i].y-2);
+//    	SDL_RenderPresent(renderer);
+//		SDL_Delay(30);
+//		}
+//		else j--;
+//	}
+
+
+    // show all buttons
+	for (int i = 1; i <= board_size; i++){
+		drawButtonTexture(button_texture, board[i].x, board[i].y);
+		drawLetter(board[i].symbol, "font/Simple-regular.ttf",
+				45, PURE_WHITE, board[i].x, board[i].y-2);
+    	SDL_RenderPresent(renderer);
+		SDL_Delay(30);
+	}
+	
 }
 
-/* draw a series of blank button in the answer section */
+/* 
+	draw a series of blank button in the answer section 
+*/
 // len: the answer's length
 // answer_board[]: this function will set (x, y) value for answer_board[]
 // we can't just use sizeof instead of using len
@@ -400,11 +432,7 @@ void setAnsBoard(const int& len, pos answer_board[]){
 		// draw a blank texture
 		drawButtonTexture(blank_texture, answer_board[i].x, answer_board[i].y);
 	}
-		// play a beep sound just to make the game cooler
-		Beep(700,50);
 		// show it to the screen
 		SDL_RenderPresent(renderer);
-		// delay so that it won't happen too fast
-		SDL_Delay(200);
 }
 

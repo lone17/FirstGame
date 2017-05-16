@@ -21,10 +21,10 @@ using namespace std;
 #define row 2 // number of rows of a board
 #define col 8 // number of columns of a board
 #define board_size (row*col) // total cells of a board
-//#define letterW 54 // button texture's width
-//#define letterH 78 // button texture's height
 
-/* macro some colours */
+/* 
+	macro some colours 
+*/
 #define CREAM_WHITE {255, 242, 204, 0}
 #define PURE_WHITE {255, 255, 255, 0}
 #define MINT {129, 231, 170, 0}
@@ -35,34 +35,44 @@ using namespace std;
 float setRatio();
 void clean();
 
-// declare ratio and sizes and set default
-// the screen is vertically divided into 4 sections 
+/* 	
+	declare ratio and sizes and set default
+	the screen is vertically divided into 4 sections 
+*/
 float ratio = setRatio(); // shrink-ratio
-//int screenW = 670, screenH = 1000; // screen's sizes
-//int _1stH = 100, _2ndH = 270, _3rdH = 340, _4thH = 290; // sections' height
 int screenW = 670*ratio, screenH = 1000*ratio; // screen's sizes
 int _1stH = 100*ratio, _2ndH = 270*ratio, _3rdH = 340*ratio, _4thH = 290*ratio; // sections' height
+
 // sections' vertical base (start point)
 int _1stB, _2ndB, _3rdB, _4thB; 
 int letterW = 54*ratio, letterH = 78*ratio;
 
-/* a struct to store level's data */
+/* 
+	a struct to store level's data 
+*/
 struct level{
-    int num;
-    string hint;
-    string answer;
+    int num;	// level number
+    string hint;	// level's hint
+    string answer;	// level's answer
 };
 
-/* struct for button object */
+/* 
+	struct for button object
+	pos is short for position
+*/
 struct pos{
-    string symbol;
-    int x, y, prevX, prevY;
+    string symbol;	// a letter shown with the button
+    int x, y; // current position 
+	int prevX, prevY; // previous position
 
+	// take the button back to previous position
 	void resetXY(){
 		x = prevX;
 		y = prevY;
 	}
 	
+	/*	swap button's current position with another's
+		also save current position as previous position */
 	void changeXY(pos other){
     	prevX = x;
     	prevY = y;
@@ -78,10 +88,12 @@ TTF_Font *font = NULL;
 SDL_Event event;
 Mix_Music* music = NULL;
 
-/*	I declare a lot of texture so that I don't have to remake texture everytime 
-	this might take up a little space but will shorten processing time 
+/*
+	I declare a lot of texture so that I don't have to remake texture everytime 
+	this might take up memory space but will shorten processing time 
 	check out image folder to see what these texture are 
-	all of them are made entirely by me */
+	all of them are made entirely by me 
+*/
 	
 // textures for letter button
 SDL_Texture* button_texture = NULL;
@@ -99,9 +111,11 @@ SDL_Texture* back_text_texture = NULL;
 SDL_Texture* back_icon_texture = NULL;
 SDL_Texture* back_click_texture = NULL;
 
-// some SDL_Rect to store exit and back button textures' value
-// I declare it here because all alignment will be adjusted manually
-// since making a function for that would be unnescessary
+/*
+	some SDL_Rect to store exit and back button textures' value
+	I declare it here because all alignment will be adjusted manually
+	since making a function for that would be unnescessary
+*/
 SDL_Rect back_icon_rect, back_text_rect, exit_icon_rect, exit_text_rect;
 
 vector<level> lv; // where we store all level's data
@@ -109,7 +123,9 @@ int lv_num = 0; // current playing level
 pos board[board_size + 1]; // initialize a board that has <board_size> cells
 // +1 so that index range from 1 to <board_size> for easier understanding
 
-/* get screen's height in pixel and set the ratio accordingly */
+/* 
+	get screen's height in pixel and set the ratio accordingly 
+*/
 float setRatio(){
 	// get user's screen resolution
 	RECT desktop;

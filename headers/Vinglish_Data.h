@@ -5,7 +5,9 @@
 void getData(vector<level>& lv, int& lv_num);
 void saveCurrentLv(const int& lv_num);
 
-/*	read data from local file	*/
+/*	
+	read data from local file	
+*/
 void getData(vector<level>& lv, int& lv_num){
 	// get current level's serial number
 	// computer count from 0 but we count from 1
@@ -25,8 +27,10 @@ void getData(vector<level>& lv, int& lv_num){
     data.close();
 }
 
-// save player's progress
-// lv_num is the currently playing lv
+/* 
+	save player's progress
+*/
+// lv_num: the currently playing lv
 void saveCurrentLv(const int& lv_num){
 	int temp;
 	// open file
