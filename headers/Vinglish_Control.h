@@ -45,7 +45,9 @@ void playMixer(const string address, int loops);
 }
 #endif /* End Vinglish_player_action */
 
-/* check if player want to get exit */
+/* 
+	check if player want to get exit 
+*/
 // event: current mouse event
 bool player_exit(SDL_Event event){
 	// declare the cursor's position as a SDL_Point
@@ -68,7 +70,9 @@ bool player_exit(SDL_Event event){
 	return false;
 }
 
-/* check if player want to get back */
+/* 
+	check if player want to get back 
+*/
 // event: current mouse event
 bool player_back(SDL_Event event){
 	// declare the cursor's position as a SDL_Point
@@ -91,7 +95,9 @@ bool player_back(SDL_Event event){
 	return false;
 }
 
-/* check if the mouse cursor is inside the area defined by (x,y,w,h) */
+/* 
+	check if the mouse cursor is inside the area defined by (x,y,w,h) 
+*/
 // there is a function similar to this in SDL_rect.h
 // but I didn't know it by that time so I make one myself
 // switching to the other function would require quite a lot time
@@ -106,7 +112,9 @@ bool checkCollision(int x, int y, int w, int h){
 	else return false;
 }
 
-/* use to check if cursor is still hover on the same button or not */
+/* 
+	use to check if cursor is still hover on the same button or not 
+*/
 // last: the last button cursor hover on
 void last_collision(int& last){
 	// if last != default (which is 0)
@@ -123,7 +131,9 @@ void last_collision(int& last){
 	}
 }
 
-/* what happen when you hover to a letter's button */
+/* 
+	what happen when you hover to a letter's button 
+*/
 // last: the last button cursor hover on
 void collision(int& last){
 	// scan through all board's members
@@ -154,7 +164,9 @@ void collision(int& last){
 }
 
 
-/* animation when you click on button in the keyboard section */
+/* 
+	animation when you click on button in the keyboard section 
+*/
 // i: index of the board's member you click on
 void click(const int& i){
 	// draw the click texture
@@ -167,7 +179,9 @@ void click(const int& i){
 	SDL_Delay(50);
 }
 
-/* what happen when you click on button in the keyboard section */
+/* 
+	what happen when you click on button in the keyboard section 
+*/
 // i: index of the board's member we are working with
 // player_answer: player's current answer
 // answer_board[]: this function will move button in baord[] to the answer_board[]
@@ -186,7 +200,9 @@ void pick(const int& i, string& player_answer, pos answer_board[]){
 	return;
 }
 
-/* what happen when you click on button in the answer section */
+/* 
+	what happen when you click on button in the answer section 
+*/
 // i: index of the board's member we are working with
 // player_answer: player's current answer
 // answer_board[]: this function will move button in answer_baord[] back to board[]
@@ -213,7 +229,11 @@ void unpick(const int& i, string& player_answer, pos answer_board[]){
 	}
 }
 
-// play music or sound
+/*	
+	play music
+*/
+//	address: music file locaton
+// 	loops: replay times, pass as -1 for infinite replay
 void playMixer(const string address, int loops){
 	//Load Music
 	music = Mix_LoadMUS(address.c_str());

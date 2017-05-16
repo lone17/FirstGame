@@ -1,17 +1,41 @@
 #pragma once
 
-#include "imgTexture.h"
+#include <SDL.h>
+#include <SDL_mixer.h>
+#include <SDL_image.h>
+#include <SDL_ttf.h>
 
 class Button{
-	private:		
-		SDL_Texture *idle, *hover;
-		SDL_Rect idle_src, hover_src, area;
+	private:
+		SDL_Texture *idle;	// idle-state texture
+		SDL_Texture *hover;	// active-state texture (when button is being hovered)
+		SDL_Rect idle_src;	// idle-state rect
+		SDL_Rect hover_src;	// active-state rect
+		SDL_Rect area;	//	area of the texture which is being shown
 	public:
+		/* 	constructors	*/
+		Button(){};
+		// idle_address: idle-state image's location
+		// hover_address: active-state image's location
 		Button(const string& idle_address, const string& hover_address);
+		
+		/* 	destructor	*/
 		~Button();
+		
+		/*	align the texture in a given area	*/
+		// src: texture's rect
+		// des: destination's rect
 		SDL_Rect align(SDL_Rect src, SDL_Rect des) const;
+		
+		/*	show idle-state texture	*/
+		// des: destination rect where texture will be shown
 		void showIdle(SDL_Rect des);
+		
+		/*	show active-sate texture	*/
+		// des: destination rect where texture will be shown
 		void showHover(SDL_Rect des);
+		
+		/*	check if object is in active state	*/
 		bool being_hovered();
 };
 
@@ -40,6 +64,7 @@ Button::Button(const string& idle_address, const string& hover_address){
 	SDL_FreeSurface(surface2);
 	surface2 = NULL;
 }
+
 Button::~Button(){
 	// free all texture
 	SDL_DestroyTexture(idle);
@@ -47,24 +72,28 @@ Button::~Button(){
 	SDL_DestroyTexture(hover);
 	hover = NULL;
 }
+
 SDL_Rect Button::align(SDL_Rect src, SDL_Rect des) const{
-	des.x += (des.w - src.w*ratio)/2;
-	des.y += (des.h - src.h*ratio)/2;
-	des.w = src.w*ratio;
-	des.h = src.h*ratio;
+	des.x += (des.w - src.w)/2;
+	des.y += (des.h - src.h)/2;
+	des.w = src.w;
+	des.h = src.h;
 	
 	return des;
 }
+
 void Button::showIdle(SDL_Rect des){
 	area = Button::align(idle_src, des);
 	// Copy texture to the renderer
 	SDL_RenderCopy(renderer, idle, &idle_src, &area);
 }
+
 void Button::showHover(SDL_Rect des){
 	area = Button::align(hover_src, des);
 	// Copy texture to the renderer
 	SDL_RenderCopy(renderer, hover, &hover_src, &area);
 }
+
 bool Button::being_hovered(){
 	if (event.motion.x >= area.x &&
 		event.motion.x <= area.x + area.w &&
