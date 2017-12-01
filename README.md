@@ -2,7 +2,7 @@
 # Vinglish
 
   - A word-based game with 200 exclusive levels
-  - You will be given a set of English words, translate those into a meaning Vietnamese word/term 
+  - You will be given a set of English words, translate those into a meaningful Vietnamese word/term 
   
 # Screenshots
 
